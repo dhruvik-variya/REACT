@@ -1,76 +1,72 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const Timer = () =>{
-      
-  const [flag, setFlag] = useState(false);
+const Timer = () => {
+  const [isRunning, setIsRunning] = useState(false);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const [inputTime, setInputTime] = useState(0);
 
-  const[second,setSecond] = useState(0);
-  const[minute,setMinute] = useState(0);
-  const [hour,setHour] = useState(0);
-
-  const [time, setTime] = useState(0);
-  let id;
-
-
-
-  useEffect(()=>{
-
-    id = setInterval(() => {
-
-        if(flag){
-            setSecond(second-1);
-        }
-
-        if(second == 0){
-            setSecond(59);
-            setMinute(minute-1);
-        }
-
-        if(minute==0){
-            setMinute(59)
-            setHour(hour-1);
-        }
-        
-    },1000 );
-
-
-    return clearInterval(id);
-
-  },[flag,second,minute,hour])
-
-
-  const divide = ()=>{
-
-    let newTime = time/60;
-
-    setHour(Math.floor(newTime));
-    setMinute(time-Math.floor(newTime)*60);
-    setSecond(Math.floor(time/60));
-    setFlag(true);
-  }
-
-  const handleStop = () => {
-    setFlag(false);
+  const resetTimer = () => {
+    setIsRunning(false);
+    setHours(0);
+    setMinutes(0);
+    setSeconds(0);
+    setInputTime(0);
   };
 
-   
-   
+  const updateTime = () => {
+    if (inputTime > 0) {
+      const totalSeconds = inputTime * 60;
+      setHours(Math.floor(totalSeconds / 3600));
+      setMinutes(Math.floor((totalSeconds % 3600) / 60));
+      setSeconds(totalSeconds % 60);
+    }
+  };
 
+  useEffect(() => {
+    if (isRunning) {
+      const interval = setInterval(() => {
+        if (hours === 0 && minutes === 0 && seconds === 0) {
+          setIsRunning(false);
+        } else {
+          if (seconds > 0) {
+            setSeconds((second) =>second - 1);
+          } else if (minutes > 0) {
+            setSeconds(59);
+            setMinutes((minute) => minute - 1);
+          } else if (hours > 0) {
+            setMinutes(59);
+            setSeconds(59);
+            setHours((hour) => hour - 1);
+          }
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isRunning, hours, minutes, seconds]);
 
   return (
     <div>
-        <h1>Timer : {hour}: {minute} : {second}</h1>
-
-        <input type="number" onChange={(e)=>setTime(e.target.value)} />
-
-        {/* <button onClick={divide}>{flag ? "stop" : "start"}</button>  */}
-
-        <button onClick={flag ? handleStop : divide}>{flag ? "Stop" : "Start"}</button>
-        
+      <h1>Timer: {hours}:{minutes}:{seconds}</h1>
+      <div>
+        <button onClick={() => setIsRunning(!isRunning)}>
+          {isRunning ? "Stop" : "Start"}
+        </button>
+        <button onClick={updateTime}>Set Time</button>
+        <button onClick={resetTimer}>Reset</button>
+      </div>
+      <div>
+        <label>Set Time (in Minutes):</label>
+        <input
+          type="number"
+          value={inputTime}
+          onChange={(e) => setInputTime(e.target.value)}
+        />
+      </div>
     </div>
-  )
-
-}
+  );
+};
 
 export default Timer;
