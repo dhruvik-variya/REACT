@@ -54,9 +54,8 @@ const Timer = () =>{
     setFlag(false);
   };
 
-  const handleStart = () => {
-    setFlag(true);
-  };
+   
+   
 
 
   return (
@@ -64,7 +63,7 @@ const Timer = () =>{
         <h1>Timer : {hour}: {minute} : {second}</h1>
 
         <input type="number" onChange={(e)=>setTime(e.target.value)} />
-        
+
         {/* <button onClick={divide}>{flag ? "stop" : "start"}</button>  */}
 
         <button onClick={flag ? handleStop : divide}>{flag ? "Stop" : "Start"}</button>
