@@ -8,7 +8,6 @@ const App = () => {
     <div>
 
       <Form/>
-      {/* <Timer duration={30} /> */}
      <Timer duration={60} />
      <Fakeapi/>
     
