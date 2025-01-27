@@ -20,17 +20,13 @@ const DisplayStudent = ({refreshData,setrefreshData}) => {
         setrefreshData(!refreshData)
     }
 
-    const updateData= async (id) =>{
-        let studentData = await api.get(`/${id}`);
-         setStudent(studentData.data)
-         setUpdateFlag((prev)=>!prev)
-      }
+    
 
 
 
   return (
     <div>
-      < Card  displayData={displayData} deleteData={deleteData} /> 
+      < Card  displayData={displayData} deleteData={deleteData}  submitUpdate={submitUpdate} /> 
 
     </div>
   )

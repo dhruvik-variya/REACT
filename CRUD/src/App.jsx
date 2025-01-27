@@ -18,6 +18,7 @@ const App = () => {
     <div>
       <AddStudent setStudent={setStudent} student={student} />
       < DisplayStudent refreshData={refreshData} setrefreshData={setRefreshData} />
+
     </div>
   );
 };
