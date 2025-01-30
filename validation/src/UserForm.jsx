@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,24 +19,51 @@ const Validation = z.object({
     .regex(/[@%&_?$]/, "special characters required"),
 });
 
+const createUser = async ({name,email,password})=>{
+  let res = await axios.post("http://localhost:8090/api/v1/users/signup",{
+    username : name,
+    email : email,
+    password : password,
+  })
+  console.log(res);
+}
+
 const UserForm = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(Validation),
+    mode: "onchange" , 
   });
 
   const onSubmit = (data) => {
-    console.log("on submit", data, errors);
-  };
+    if(data){
+      createUser(data);
+    }
+   };
+
+   let value = watch();
+
+   const getBorder = (name) =>{
+    if(errors[name]){
+      return "1px solid red";
+    }
+    else if(value[name] && !errors[name]) { 
+      return "1px solid green";
+    }
+    else {
+      return "1px solid black";
+    }
+   }
 
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="">name: </label>
-        <input type="text" {...register("name")} />
+        <input type="text" {...register("name")} style={{border : getBorder("name")}} />
         {errors.name && <p>{errors.name.message}</p>}
         <br />
 
