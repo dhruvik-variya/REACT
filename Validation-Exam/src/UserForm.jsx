@@ -2,31 +2,33 @@ import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Validation = z.object({
   name: z
     .string()
-    .min(2, "min 2 characters required")
-    .max(2, "max 25 characters required"),
+    .min(2, "Min 2 characters required")
+    .max(25, "Max 25 characters required"),
 
-  email: z.string().email(),
+  email: z.string().email("Invalid email format"),
 
   password: z
     .string()
-    .min(6, "min 6 characters required")
-    .regex(/[a-z]/, "small characters required")
-    .regex(/[A-Z]/, "large characters required")
-    .regex(/[@%&_?$]/, "special characters required"),
+    .min(6, "Min 6 characters required")
+    .regex(/[a-z]/, "At least one lowercase letter required")
+    .regex(/[A-Z]/, "At least one uppercase letter required")
+    .regex(/[@%&_?$]/, "At least one special character required"),
 });
 
-const createUser = async ({name,email,password})=>{
-  let res = await axios.post("http://localhost:8090/api/v1/users/signup",{
-    username : name,
-    email : email,
-    password : password,
-  })
+const createUser = async ({ name, email, password }) => {
+  let res = await axios.post("http://localhost:8090/api/v1/users/signup", {
+    username: name,
+    email: email,
+    password: password,
+  });
   console.log(res);
-}
+};
 
 const UserForm = () => {
   const {
@@ -36,50 +38,53 @@ const UserForm = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(Validation),
-    mode: "onchange" , 
+    mode: "onChange",
   });
 
   const onSubmit = (data) => {
-    if(data){
+    if (data) {
       createUser(data);
     }
-   };
+  };
 
-   let value = watch();
+  let value = watch();
 
-   const getBorder = (name) =>{
-    if(errors[name]){
-      return "1px solid red";
+  const getBorder = (name) => {
+    if (errors[name]) {
+      return "border-danger";
+    } else if (value[name] && !errors[name]) {
+      return "border-success";
+    } else {
+      return "border-secondary";
     }
-    else if(value[name] && !errors[name]) { 
-      return "1px solid green";
-    }
-    else {
-      return "1px solid black";
-    }
-   }
+  };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-      
-        <label htmlFor="">name: </label>
-        <input type="text" {...register("name")} style={{border : getBorder("name")}} />
-        {errors.name && <p>{errors.name.message}</p>}
-        <br />
+    <div className="container mt-5">
+      <div className="card shadow p-4" style={{ maxWidth: "500px", margin: "auto", backgroundColor: "#f8f9fa" }}>
+        <h2 className="text-center text-primary">User Signup</h2>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-3">
+            <label className="form-label">Name</label>
+            <input type="text" className={`form-control ${getBorder("name")}`} {...register("name")} />
+            {errors.name && <small className="text-danger">{errors.name.message}</small>}
+          </div>
 
-        <label>email: </label>
-        <input type="email" {...register("email")} />
-        {errors.email && <p>{errors.email.message}</p>}
-        <br />
+          <div className="mb-3">
+            <label className="form-label">Email</label>
+            <input type="email" className={`form-control ${getBorder("email")}`} {...register("email")} />
+            {errors.email && <small className="text-danger">{errors.email.message}</small>}
+          </div>
 
-        <label htmlFor="">password: </label>
-        <input type="text" {...register("password")} />
-        {errors.password && <p>{errors.password.message}</p>}
-        <br />
+          <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input type="password" className={`form-control ${getBorder("password")}`} {...register("password")} />
+            {errors.password && <small className="text-danger">{errors.password.message}</small>}
+          </div>
 
-        <input type="submit" />
-      </form>
+          <button type="submit" className="btn btn-primary w-100">Sign Up</button>
+        </form>
+      </div>
     </div>
   );
 };
