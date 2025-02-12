@@ -5,12 +5,8 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
 
   const FetchPosts = async () => {
-    try {
       const res = await axios.get('https://jsonplaceholder.typicode.com/posts');
       setPosts(res.data);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    }
   };
 
   useEffect(() => {
