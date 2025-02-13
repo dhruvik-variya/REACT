@@ -5,7 +5,7 @@ import Assign from "../page/Assign";
 import Login from "../page/Login";
 import Signup from "../page/Signup";
 import { getUserDetails } from "../userDetails";
-import Private from "./private";
+import Private from "./Private";
 import { Ability } from "../role/Ability";
 import PageNotFound from "../page/PageNotFound";
 
