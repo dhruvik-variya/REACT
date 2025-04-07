@@ -1,0 +1,8 @@
+{
+    "rooms": [
+      { "id": 1, "type": "Deluxe", "features": "AC, TV", "available": true },
+      { "id": 2, "type": "Suite", "features": "AC, TV, WiFi", "available": false }
+    ],
+    "reservations": []
+  }
+  
